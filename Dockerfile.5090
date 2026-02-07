@@ -129,6 +129,9 @@ RUN apt-get update && \
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin /usr/local/bin
 
+# Copy ComfyUI and custom nodes from builder stage
+COPY --from=builder /tmp/build/ComfyUI /workspace/runpod-slim/ComfyUI
+
 # Remove uv to force ComfyUI-Manager to use pip (uv doesn't respect --system-site-packages properly)
 RUN pip uninstall -y uv 2>/dev/null || true && \
     rm -f /usr/local/bin/uv /usr/local/bin/uvx
@@ -164,6 +167,7 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
     update-alternatives --set python3 /usr/bin/python3.12
 
 ENTRYPOINT ["/start.sh"]
+
 
 
 
